@@ -1,23 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Request Example</title>
-</head>
-<body>
-    <h2>
-		<center>Steam germany age requirement (Early Test Version)</center>
-	</h2>
-    <center>
-	<p>AppID:
-		<input type="number" min="0" id="inputField" placeholder="Enter steam appID">
-			<button id="submitButton">Check Status</button>
-		</input>
-	</p>
-	</center>
-    <div id="result">The response will be displayed here.</div>
+    <title>Steam Germany Age Rating</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="SteamAppsFull.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="header">
+        <h1 class="title">Steam Germany Age Rating</h1>
+        <nav class="navbar">
+            <ul>
+                <li><button class="tablinks" onclick="openTab(event, 'search')"><img src="./icons/search.svg"
+                            class="nav-icon"> Search</button></li>
+                <li><button class="tablinks" onclick="openTab(event, 'wishlist')"><img src="./icons/star.svg"
+                            class="nav-icon"> Wishlist</button></li>
+                <li><button id="overviewTab" class="tablinks" onclick="openTab(event, 'overview')"><img
+                            src="./icons/eye.svg" class="nav-icon"> Overview</button></li>
+                <li><button class="tablinks" onclick="openTab(event, 'faq')"><img src="./icons/help.svg"
+                            class="nav-icon"> FAQ</button></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Main Content Area -->
+    <main class="content">
+
+        <!-- Search Tab -->
+        <div id="search" class="tabcontent">
+
+            <h2>Lookup age rating availability</h2>
+
+            <!-- Search Bar Section -->
+            <div class="search">
+                <div class="search-wrapper">
+                    <div id="search-section" class="search-section">
+                        <input type="text" id="searchInput" placeholder="Search..." class="search-input">
+                        <button id="singleButton" class="search-button">
+                            <img src="./icons/search.svg" alt="Search Icon" class="search-icon">
+                        </button>
+                    </div>
+                    <!-- Search Suggestions -->
+                    <ul class="suggestions" id="suggestions"></ul>
+                </div>
+            </div>
+
+            <!-- Result Display -->
+            <ul id="single-list" class="styled-list"></ul>
+
+        </div>
+
+        <!-- Wishlist Tab -->
+        <div id="wishlist" class="tabcontent">
+
+            <h2>Inspect your steam wishlist</h2>
+            <h4>1. Using your Steam ID, download your steam wishlist from:</h4>
+            <h4>https://store.steampowered.com/wishlist/profiles/YOUR_STEAM_ID/wishlistdata/?p=0</h4>
+            <h4>2. Click the select button to analyze the wishlist</h4>
+
+            <div class="search">
+                <div class="search-wrapper">
+                    <div id="search-section" class="search-section">
+                        <label for="file-upload" class="custom-file-upload">
+                            Select wishlist json
+                            <input id="file-upload" type="file" id="searchInput" placeholder="Search..."
+                                class="search-input">
+                            <img src="./icons/folder.svg" alt="Search Icon" class="search-icon">
+                        </label>
+                    </div>
+                    <!-- Search Suggestions -->
+                    <ul class="suggestions" id="suggestions"></ul>
+                </div>
+            </div>
+            <h3 id="wishlistSummary" style="display: none;">Summary</h3>
+
+            <!-- Result Display -->
+            <ul id="multi-list" class="styled-list"></ul>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tabcontent">
+
+            <h2>Rating of every game, dlc and demo</h2>
+
+            <div style="margin-top: 100px;">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <!-- FAQ Tab -->
+        <div id="faq" class="tabcontent">
+            <h2>Frequently asked questions</h2>
+
+            <h3>What is this?</h3>
+            <p>This is a website to lookup games without age rate for Steam, built on GitHub pages </p>
+
+            <h3>Are unrated games a problem?</h3>
+            <p>Because of a new regulation in Germany, all games without an age rating are no longer allowed to be sold in
+                Germany</p>
+
+            <h3>So, this includes which games exactly?</h3>
+            <p>Sadly, this will include all games without an age rating</p>
+
+            <h3>Isn't age rating via official organizations either slow or costly?</h3>
+            <p>This does not matter because steam itself provides a solution that is free and can be done via a form on
+                the steam partner page </p>
+
+            <h3>When will this be a problem?</h3>
+            <p>On <b>November 15th</b> all games without an age rating will be delisted from the Steam Store in Germany
+            </p>
+
+            <h3>What about games I've already bought?</h3>
+            <p>If you purchased a game and it does not have an age rating, you don't have to worry and you can still
+                play the game after the deadline</p>
+
+            <h3>Can newer games be uploaded without age rating?</h3>
+            <p>No. As of right now, the upload process for Steam requires age verification</p>
+
+            <h3>What can I do if found a game which is not rated?</h3>
+            <p>First off, you should double-check the official Steam Store page for the game to ensure that the data of
+                this site is not outdated</p>
+            <p>If it seems that there is no rating, then you can only rely on the game's developer to initialize the
+                rating process</p>
+            <p>Please do not pressure developers who don't already have or do not want to rate their games</p>
+
+            <h3>For more info, lookup the official statement and FAQ from steam</h3>
+            <p>Statement: https://steamcommunity.com/groups/steamworks/announcements/detail/4678768276768588864</p>
+            <p>FAQ: https://partner.steamgames.com/doc/gettingstarted/contentsurvey/germany</p>
+
+            <h3>Personal thoughts:</h3>
+            <p>It's quite sad that many games will be delisted because of this</p>
+            <p>The preferred solution should be that every unlisted game should be listed as 18+ if no rating has been
+                given</p>
+            <p>However, this idea has already been rejected by the government</p>
+            <p>This affects mainly games from smaller studios, which no longer maintain or are sometimes unable to
+                update games due to various reasons</p>
+            <p>In the end, this results in some great indie games that can no longer be purchased</p>
+            <p>Don't be discouraged or enraged because some games will be unlisted</p>
+            <p>There's always the possibility for Steam or Germany to handle this situation differently in the future, so that
+                we can buy unrated games again</p>
+            <p>Thank you for reading this!</p>
+
+        </div>
+
+        <script>
+            document.getElementById("singleButton").addEventListener('click', () => showSearchResults());
+            document.getElementById("file-upload").addEventListener('change', readLocalJson);
+            document.getElementById("searchInput").addEventListener('input', () => searchJson());
+            document.getElementById("overviewTab").addEventListener('click', () => fillPieChart());
+        </script>
+
+
+    </main>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>&copy; 2024 by Sgt-Bulldozer</p>
+    </footer>
 </body>
+
 </html>
